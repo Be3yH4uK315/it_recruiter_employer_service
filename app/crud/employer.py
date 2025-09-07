@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from uuid import UUID
 from app import models, schemas
+from sqlalchemy.dialects.postgresql import insert
 
 
 # --- CRUD для Employer ---
@@ -29,3 +30,33 @@ def create_employer_search_session(
     db.commit()
     db.refresh(db_session)
     return db_session
+
+
+# --- CRUD для Decision ---
+def create_decision(db: Session, decision: schemas.DecisionCreate, session_id: UUID):
+    stmt = insert(models.Decision).values(
+        session_id=session_id,
+        candidate_id=decision.candidate_id,
+        decision=decision.decision,
+        note=decision.note
+    ).on_conflict_do_update(
+        index_elements=['session_id', 'candidate_id'],
+        set_={'decision': decision.decision, 'note': decision.note}
+    ).returning(models.Decision)
+
+    result = db.execute(stmt).scalar_one()
+    db.commit()
+    return result
+
+
+# --- CRUD для ContactsRequest ---
+def create_contact_request(db: Session, request: schemas.ContactsRequestCreate, employer_id: UUID, granted: bool):
+    db_request = models.ContactsRequest(
+        **request.model_dump(),
+        employer_id=employer_id,
+        granted=granted
+    )
+    db.add(db_request)
+    db.commit()
+    db.refresh(db_request)
+    return db_request
