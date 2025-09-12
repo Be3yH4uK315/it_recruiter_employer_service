@@ -81,4 +81,4 @@ class SearchSession(Base):
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
     employer = relationship("Employer", back_populates="search_sessions")
-    decisions = relationship("Decision", back_populates="search_sessions", cascade="all, delete-orphan")
+    decisions = relationship("Decision", back_populates="search_session", cascade="all, delete-orphan")

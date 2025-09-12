@@ -6,7 +6,9 @@ class CandidateHttpClient:
         self.base_url = base_url
 
     async def get_candidate_profile(self, candidate_id: str) -> dict | None:
-        async with httpx.AsyncClient(timeout=10.0) as client:
+        async with httpx.AsyncClient(
+                http2=False, trust_env=False, timeout=10.0
+        ) as client:
             try:
                 response = await client.get(f"{self.base_url}/candidates/{candidate_id}")
                 response.raise_for_status()
