@@ -7,7 +7,7 @@ from app.core.db import get_db
 
 router = APIRouter()
 
-
+# --- EMPLOYER ---
 @router.post("/", response_model=schemas.Employer, status_code=status.HTTP_201_CREATED)
 def create_employer(employer: schemas.EmployerCreate, db: Session = Depends(get_db)):
     db_employer = crud.employer.get_employer_by_telegram_id(
@@ -17,24 +17,23 @@ def create_employer(employer: schemas.EmployerCreate, db: Session = Depends(get_
         return db_employer
     return crud.employer.create_employer(db=db, employer=employer)
 
-
+# --- SEARCH ---
 @router.post("/{employer_id}/searches", response_model=schemas.SearchSession, status_code=status.HTTP_201_CREATED)
 def create_search_session(employer_id: UUID, session: schemas.SearchSessionCreate, db: Session = Depends(get_db)):
     return crud.employer.create_employer_search_session(
         db=db, session=session, employer_id=employer_id
     )
 
-
+# --- DECISION ---
 @router.post("/searches/{session_id}/decisions", response_model=schemas.Decision, status_code=status.HTTP_201_CREATED)
 def create_decision_for_session(
     session_id: UUID,
     decision: schemas.DecisionCreate,
     db: Session = Depends(get_db)
 ):
-    # Здесь нужна проверка, что сессия принадлежит текущему пользователю
     return crud.create_decision(db=db, decision=decision, session_id=session_id)
 
-
+# --- CONTACTS ---
 @router.post("/{employer_id}/contact-requests", response_model=schemas.ContactDetailsResponse)
 async def request_candidate_contacts(
         employer_id: UUID,

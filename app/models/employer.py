@@ -15,17 +15,10 @@ from sqlalchemy.schema import UniqueConstraint
 from app.core.db import Base
 import enum
 
-
-class SearchStatus(str, enum.Enum):
-    ACTIVE = "active"
-    PAUSED = "paused"
-    CLOSED = "closed"
-
-
+# --- DECISION ---
 class DecisionType(str, enum.Enum):
     LIKE = "like"
     DISLIKE = "dislike"
-
 
 class Decision(Base):
     __tablename__ = "decisions"
@@ -41,7 +34,7 @@ class Decision(Base):
 
     __table_args__ = (UniqueConstraint('session_id', 'candidate_id', name='_session_candidate_uc'),)
 
-
+# --- CONTACTS ---
 class ContactsRequest(Base):
     __tablename__ = "contacts_requests"
 
@@ -53,8 +46,7 @@ class ContactsRequest(Base):
 
     employer = relationship("Employer", back_populates="contact_requests")
 
-
-
+# --- EMPLOYER ---
 class Employer(Base):
     __tablename__ = "employers"
 
@@ -68,6 +60,11 @@ class Employer(Base):
     search_sessions = relationship("SearchSession", back_populates="employer", cascade="all, delete-orphan")
     contact_requests = relationship("ContactsRequest", back_populates="employer", cascade="all, delete-orphan")
 
+# --- SEARCH ---
+class SearchStatus(str, enum.Enum):
+    ACTIVE = "active"
+    PAUSED = "paused"
+    CLOSED = "closed"
 
 class SearchSession(Base):
     __tablename__ = "search_sessions"

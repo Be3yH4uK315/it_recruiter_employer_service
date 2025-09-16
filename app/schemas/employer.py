@@ -3,15 +3,13 @@ from typing import Optional, Dict, Any
 from uuid import UUID
 from app.models.employer import DecisionType
 
-# --- Схемы для Employer ---
+# --- EMPLOYER ---
 class EmployerBase(BaseModel):
     company: Optional[str] = None
     contacts: Optional[dict] = None
 
-
 class EmployerCreate(EmployerBase):
     telegram_id: int
-
 
 class Employer(EmployerBase):
     id: UUID
@@ -20,16 +18,13 @@ class Employer(EmployerBase):
     class Config:
         from_attributes = True
 
-
-# --- Схемы для SearchSession ---
+# --- SEARCH ---
 class SearchSessionBase(BaseModel):
     title: str = Field(..., min_length=3, max_length=100)
     filters: Dict[str, Any]
 
-
 class SearchSessionCreate(SearchSessionBase):
     pass
-
 
 class SearchSession(SearchSessionBase):
     id: UUID
@@ -38,8 +33,7 @@ class SearchSession(SearchSessionBase):
     class Confid:
         from_attributes = True
 
-
-# --- Схемы для Decision ---
+# --- DECIDION ---
 class DecisionBase(BaseModel):
     candidate_id: UUID
     decision: DecisionType
@@ -55,7 +49,7 @@ class Decision(DecisionBase):
     class Config:
         from_attributes = True
 
-# --- Схемы для ContactsRequest ---
+# --- CONTACTS ---
 class ContactsRequestCreate(BaseModel):
     candidate_id: UUID
 
@@ -67,7 +61,6 @@ class ContactsRequest(ContactsRequestCreate):
     class Config:
         from_attributes = True
 
-# --- Схема для ответа при запросе контактов ---
 class ContactDetailsResponse(BaseModel):
     granted: bool
     contacts: Optional[Dict[str, Any]] = None

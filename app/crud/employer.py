@@ -3,15 +3,13 @@ from uuid import UUID
 from app import models, schemas
 from sqlalchemy.dialects.postgresql import insert
 
-
-# --- CRUD для Employer ---
+# --- EMPLOYER ---
 def get_employer_by_telegram_id(db: Session, telegram_id: int):
     return (
         db.query(models.Employer)
         .filter(models.Employer.telegram_id == telegram_id)
         .first()
     )
-
 
 def create_employer(db: Session, employer: schemas.EmployerCreate):
     db_employer = models.Employer(**employer.model_dump())
@@ -20,8 +18,7 @@ def create_employer(db: Session, employer: schemas.EmployerCreate):
     db.refresh(db_employer)
     return db_employer
 
-
-# --- CRUD для SearchSession ---
+# --- SEARCH ---
 def create_employer_search_session(
     db: Session, session: schemas.SearchSessionCreate, employer_id: UUID
 ):
@@ -31,8 +28,7 @@ def create_employer_search_session(
     db.refresh(db_session)
     return db_session
 
-
-# --- CRUD для Decision ---
+# --- DECISION ---
 def create_decision(db: Session, decision: schemas.DecisionCreate, session_id: UUID):
     stmt = insert(models.Decision).values(
         session_id=session_id,
@@ -48,8 +44,7 @@ def create_decision(db: Session, decision: schemas.DecisionCreate, session_id: U
     db.commit()
     return result
 
-
-# --- CRUD для ContactsRequest ---
+# --- CONTACTS
 def create_contact_request(db: Session, request: schemas.ContactsRequestCreate, employer_id: UUID, granted: bool):
     db_request = models.ContactsRequest(
         **request.model_dump(),

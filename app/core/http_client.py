@@ -1,6 +1,7 @@
 import httpx
 from app.core.config import CANDIDATE_SERVICE_URL
 
+# --- CANDIDATE ---
 class CandidateHttpClient:
     def __init__(self, base_url: str = CANDIDATE_SERVICE_URL):
         self.base_url = base_url
